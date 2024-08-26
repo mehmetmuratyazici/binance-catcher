@@ -23,7 +23,7 @@ public class BinanceWebSocketService {
         BinanceWebSocketClient binanceWebSocketClient = new BinanceWebSocketClient(new URI(webSocketUrl + webSocketInitialRequest.getSymbol() + WEB_SOCKET_TRADE));
         String id = null;
         if (binanceWebSocketClient.connectBlocking()) {
-            id = webSocketInitialRequest.getSymbol() + "_" + UUID.randomUUID();
+            id = webSocketInitialRequest.getSymbol();// + "_" + UUID.randomUUID();
             General.cacheWebSocketClient.put(id, binanceWebSocketClient);
         }
 
