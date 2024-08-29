@@ -7,6 +7,7 @@ import com.mmy.binance.catcher.wss.client.BinanceWebSocketClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -17,7 +18,7 @@ public class BinanceWebSocketService {
     @Value("${websocket.url}")
     private String webSocketUrl;
 
-    private final String WEB_SOCKET_TRADE = "@trade";
+    private final String WEB_SOCKET_TRADE = "@aggTrade";
 
     public WebSocketInitialResponse startWebSocketConnection(WebSocketInitialRequest webSocketInitialRequest) throws URISyntaxException, InterruptedException {
         BinanceWebSocketClient binanceWebSocketClient = new BinanceWebSocketClient(new URI(webSocketUrl + webSocketInitialRequest.getSymbol() + WEB_SOCKET_TRADE));
@@ -25,6 +26,7 @@ public class BinanceWebSocketService {
         if (binanceWebSocketClient.connectBlocking()) {
             id = webSocketInitialRequest.getSymbol();// + "_" + UUID.randomUUID();
             General.cacheWebSocketClient.put(id, binanceWebSocketClient);
+            General.cacheCoinPrices.put(id, BigDecimal.ZERO);
         }
 
         return new WebSocketInitialResponse(id);

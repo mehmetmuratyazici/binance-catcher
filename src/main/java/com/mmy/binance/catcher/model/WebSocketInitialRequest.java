@@ -9,5 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WebSocketInitialRequest {
-    private String symbol;
+    private String firstPart;
+    private String secondPart;
+
+    public String getSymbol() {
+        return this.firstPart + this.secondPart;
+    }
 }

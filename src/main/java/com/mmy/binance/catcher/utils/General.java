@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class General {
+
+    public static Map<String, BigDecimal> cacheCoinPrices = new HashMap<>();
+
     public static Map<String, BinanceWebSocketClient> cacheWebSocketClient = new HashMap<>();
 
     public static Map<String, GeneralStatusInformation> generalStatusInformationMap = new HashMap<>();
@@ -39,9 +42,8 @@ public class General {
 
         AccountInformation accountInformation = getAccountInfo();
         if(accountInformation != null){
-            accountInformation.getBalances().parallelStream().filter(balance -> balance.getAsset().equals(tradeInformationModel.getSymbol())).findFirst();
+            accountInformation.getBalance(tradeInformationModel.getSymbol());
         }
-
 
         generalStatusInformationMap.put(tradeInformationModel.getSymbol().toLowerCase(),
                 GeneralStatusInformation.builder().purchasePrice(tradeInformationModel.getPrice()).isBuy(true).build());
@@ -120,7 +122,7 @@ public class General {
         String encrypted = hmacSHA256(queryString, secretKey);
 
         RestTemplate restTemplate = new RestTemplate();
-        String url = String.format("https://api.binance.com/api/v3/account??%s&signature=%s", queryString, encrypted);
+        String url = String.format("https://api.binance.com/api/v3/account?%s&signature=%s", queryString, encrypted);
 
         // Başlıkları (headers) oluştur
         HttpHeaders headers = new HttpHeaders();
@@ -130,7 +132,7 @@ public class General {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         try {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             String responseBody = responseEntity.getBody();
             HttpStatus statusCode = (HttpStatus) responseEntity.getStatusCode();
 

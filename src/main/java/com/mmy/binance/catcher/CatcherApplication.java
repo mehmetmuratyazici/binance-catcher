@@ -22,6 +22,6 @@ public class CatcherApplication {
 
     @PostConstruct
     private void init() throws URISyntaxException, InterruptedException {
-        binanceWebSocketService.startWebSocketConnection(new WebSocketInitialRequest("avaxusdt"));
+        binanceWebSocketService.startWebSocketConnection(new WebSocketInitialRequest("avax","usdt"));
     }
 }
